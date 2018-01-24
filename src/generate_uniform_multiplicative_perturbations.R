@@ -31,6 +31,8 @@ parser$add_argument("--range_min", type = "double", default = 0.0001, help = "Se
 parser$add_argument("--num_windows", type = "integer", default = 50, help = "The number of windows to use when filtering (default: %(default)s)")
 parser$add_argument("--num_perturbations", type = "integer", default = 50, help = "The number of perturbations to subsample to within each window (default: %(default)s)")
 parser$add_argument("--drop_low_perturbation_windows", action = "store_true", help = "Flag to indicate that perturbations in windows with fewer total perturbations than num_perturbations should be ignored")
+
+# Parse command line arguments
 args = parser$parse_args()
 
 # Load and/or source necessary libraries
@@ -56,9 +58,7 @@ bacterial_function_table = custom_read(args$bacterial_function_table, header = F
 ### Format column names of tables
 
 colnames(taxonomic_profile_table)[1] = c("taxon")
-
 colnames(norm_16S_table) = c("taxon", "copy_number")
-
 colnames(genome_content_table)[1] = "taxon"
 
 ###############################################################################
@@ -215,7 +215,7 @@ function_table = function_table[,c(ncol(function_table), 1:(ncol(function_table)
 nonzero_rows = which(rowSums(function_table[,2:ncol(function_table),with=F]) > 0)
 function_table = function_table[nonzero_rows]
 
-#################################################################################################
+###############################################################################
 
 ### Write resulting tables
 
