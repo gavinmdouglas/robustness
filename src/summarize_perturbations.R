@@ -272,5 +272,8 @@ superpathway_relative_diff_table[,perturbation:=colnames(superpathway_relative_d
 # Merge pathway and superpathway relative difference tables
 function_relative_diff_table = merge(pathway_relative_diff_table, superpathway_relative_diff_table, by = c("original_sample", "perturbation"))
 
+# Merge function relative difference table with the associated weighted unifrac dissimilarities
+function_relative_diff_table = merge(function_relative_diff_table, weighted_unifrac_table, by = c("original_sample", "perturbation"))
+
 # Write the table of individual function relative shifts in abundance
 write.table(function_relative_diff_table, args$output_function_relative_difference_table, quote=F, sep="\t", row.names=F, col.names=T)
