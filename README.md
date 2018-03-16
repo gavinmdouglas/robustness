@@ -8,7 +8,7 @@ The source code for this microbial community taxa-function robustness estimation
 
 ##### Downloading required data files
 
-PICRUSt and Greengenes files used by default by this pipeline should be downloaded from their original sources. To run the default pipeline, users should download the PICRUSt [16S rRNA gene copy number table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/16S_13_5_precalculated.tab.gz) and [genomic content annotation table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/ko_13_5_precalculated.tab.gz), saving them to the `data` directory. Additionally, the [Greengenes tree](https://s3.amazonaws.com/gg_sg_web/gg_13_5_otus_99_annotated.tree.gz?AWSAccessKeyId=AKIAIKZRXPOMF7SLT42A&Signature=esMW7qFmRflNJ8hpBrF4WJ%2FLlZU%3D&Expires=1519260808) (currently unavailable, looking into hosting the file locally) should be downloaded, unzipped, and saved to the `data` directory.
+PICRUSt and Greengenes files used by default by this pipeline should be downloaded from their original sources. To run the default pipeline, users should download the PICRUSt [16S rRNA gene copy number table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/16S_13_5_precalculated.tab.gz) and [genomic content annotation table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/ko_13_5_precalculated.tab.gz), saving them to the `data` directory. Additionally, the Greengenes tree (specifically gg_13_5_otus_99_annotated.tree.gz) can be downloaded from the Greengenes site ([here](http://greengenes.secondgenome.com/downloads/database/13_5)) and unzipped and saved to the `data` directory.
 
 ### USE:
 
