@@ -6,6 +6,10 @@ The source code for this microbial community taxa-function robustness estimation
 
 `git clone git@github.com:borenstein-lab/robustness.git`
 
+##### Dependencies
+
+This pipeline relies on the following R packages that may not be installed by default: argparse, phyloseq, and RcppEigen.
+
 ##### Downloading required data files
 
 PICRUSt and Greengenes files used by default by this pipeline should be downloaded from their original sources. To run the default pipeline, users should download the PICRUSt [16S rRNA gene copy number table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/16S_13_5_precalculated.tab.gz) and [genomic content annotation table](http://kronos.pharmacology.dal.ca/public_files/picrust/picrust_precalculated_v1.1.3/13_5/ko_13_5_precalculated.tab.gz), saving them to the `data` directory. Additionally, the Greengenes tree (specifically gg_13_5_otus_99_annotated.tree.gz) can be downloaded from the Greengenes site ([here](http://greengenes.secondgenome.com/downloads/database/13_5)) and unzipped and saved to the `data` directory.

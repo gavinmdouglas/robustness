@@ -47,7 +47,7 @@ source(args$function_distribution_features)
 taxonomic_profile_table = custom_read(args$taxonomic_profile_table)
 function_table = custom_read(args$function_table)
 weighted_unifrac_table = custom_read(args$weighted_unifrac_table)
-genome_content_table = custom_read(args$genome_content_table)
+genome_content_table = custom_read(args$genome_content_table, fill = T)
 bacterial_function_table = custom_read(args$bacterial_function_table, header = F)
 pathway_mapping_table = custom_read(args$pathway_mapping_table)
 pathway_label_table = custom_read(args$pathway_label_table, header=F, colClasses = c("string", "string"))
@@ -81,6 +81,9 @@ genome_content_table = genome_content_table[order(taxon)]
 bacterial_functions = unlist(bacterial_function_table)
 bacterial_function_filtered_content_cols = c(1, which(colnames(genome_content_table) %in% bacterial_functions))
 genome_content_table = genome_content_table[,bacterial_function_filtered_content_cols,with=F]
+
+# Remove rows without NSTI data from the genome content table (either KO descriptions or blank rows)
+genome_content_table = na.omit(genome_content_table, ncol(genome_content_table))
 
 # Normalize pathway contributions for each function
 pathway_mapping_table[pathway_mapping_table == 0] = NA

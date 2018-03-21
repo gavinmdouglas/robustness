@@ -50,7 +50,7 @@ source(args$file_handling)
 
 taxonomic_profile_table = custom_read(args$taxonomic_profile_table)
 norm_16S_table = custom_read(args$copy_number_norm_table)
-genome_content_table = custom_read(args$genome_content_table)
+genome_content_table = custom_read(args$genome_content_table, fill = T)
 bacterial_function_table = custom_read(args$bacterial_function_table, header = F)
 
 ###############################################################################
@@ -77,6 +77,9 @@ num_reads = sum(unlist(taxonomic_profile_table[,2,with=F]))
 bacterial_functions = unlist(bacterial_function_table)
 bacterial_function_filtered_content_cols = c(1, which(colnames(genome_content_table) %in% bacterial_functions))
 genome_content_table = genome_content_table[,bacterial_function_filtered_content_cols,with=F]
+
+# Remove rows without NSTI data from the genome content table (either KO descriptions or blank rows)
+genome_content_table = na.omit(genome_content_table, ncol(genome_content_table))
 
 ###############################################################################
 
