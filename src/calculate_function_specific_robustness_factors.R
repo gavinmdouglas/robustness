@@ -25,7 +25,7 @@ parser$add_argument("output_robustness_factor_table",
 
 # Define options
 parser$add_argument("--file_handling",
-                    default = paste(script.basename, "src/file_handling.R", sep=""),
+                    default = paste(script.basename, "/file_handling.R", sep=""),
                     help = "Location of custom library for reading files")
 
 # Parse command line arguments
