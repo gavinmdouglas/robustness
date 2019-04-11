@@ -2,10 +2,17 @@
 #
 # Author: Alex Eng
 # Date: 1/18/2018
+# Edited by Gavin Douglas (4/11/2019).
 
 ###############################################################################
 
 suppressPackageStartupMessages(library(argparse))
+
+# Determine relative path to optional input files based on full path to script.
+initial.options <- commandArgs(trailingOnly = FALSE)
+file.arg.name <- "--file="
+script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+script.basename <- dirname(script.name)
 
 # Defining arguments and parser for command line arguments
 parser = ArgumentParser(description = "Generate perturbed taxonmic and functional profile tables for a given community.")
@@ -17,20 +24,68 @@ parser$add_argument("output_function_table", help = "The location to save the fu
 parser$add_argument("output_weighted_unifrac_table", help = "The location to save the weighted UniFrac dissimilarities between the original community and the perturbed community compositions")
 
 # Define options
-parser$add_argument("--fast_matrix_multiply", default = "src/fast_matrix_multiplication.cpp", help = "Location of the Rcpp implementation of matrix multiplaction (default: %(default)s)")
-parser$add_argument("--file_handling", default = "src/file_handling.R", help = "Location of custom library for reading files")
-parser$add_argument("--perturbation_list", type = "double", default = seq(1.2, 10, 0.2), nargs = "+", help = "The list of maximum perturbation magnitudes to generate perturbations for (default: %(default)s)")
-parser$add_argument("--num_replicates", type = "integer", default = 100, help = "The number of perturbations to generate for each maximum perturbation magnitude (default: %(default)s)")
-parser$add_argument("--copy_number_norm_table", default = "data/16S_13_5_precalculated.tab.gz", help = "The table of 16S copy numbers for each taxon to normalize taxon counts with (default: %(default)s)")
-parser$add_argument("--genome_content_table", default = "data/ko_13_5_precalculated.tab.gz", help = "The genome content table for each taxon (default: %(default)s)")
-parser$add_argument("--bacterial_function_table", default = "data/KO_BACTERIAL_KEGG_2013_07_15.lst", help = "The table of bacterial functions (default: %(default)s)")
-parser$add_argument("--tree", default = "data/gg_13_5_otus_99_annotated.tree", help = "The tree to use for calculating weighted UniFrac (default: %(default)s)")
-parser$add_argument("--normal_scale", action = "store_true", help = "Flag to indicate that filtering should be done on normal scale (default filtering is done on log scale)")
-parser$add_argument("--range_max", type = "double", default = 0.4, help = "Set the maximum of the range of taxonomic profile dissimilarities, any perturbations with a greater taxonomic profile dissimilarity will be filtered out (default: %(default)s)")
-parser$add_argument("--range_min", type = "double", default = 0.0001, help = "Set the minimum of the range of taxonomic profile dissimilarities, any perturbations with a lower taxonomic profile dissimilarity will be filtered out (default: %(default)s)")
-parser$add_argument("--num_windows", type = "integer", default = 50, help = "The number of windows to use when filtering (default: %(default)s)")
-parser$add_argument("--num_perturbations", type = "integer", default = 50, help = "The number of perturbations to subsample to within each window (default: %(default)s)")
-parser$add_argument("--drop_low_perturbation_windows", action = "store_true", help = "Flag to indicate that perturbations in windows with fewer total perturbations than num_perturbations should be ignored")
+parser$add_argument("--fast_matrix_multiply",
+                    default = paste(script.basename, "/fast_matrix_multiplication.cpp", sep=""),
+                    help = "Location of the Rcpp implementation of matrix multiplaction (default: %(default)s)")
+
+parser$add_argument("--file_handling",
+                    default = paste(script.basename, "/file_handling.R", sep=""),
+                    help = "Location of custom library for reading files")
+
+parser$add_argument("--perturbation_list",
+                    type = "double",
+                    default = seq(1.2, 10, 0.2),
+                    nargs = "+",
+                    help = "The list of maximum perturbation magnitudes to generate perturbations for (default: %(default)s)")
+
+parser$add_argument("--num_replicates",
+                    type = "integer",
+                    default = 100,
+                    help = "The number of perturbations to generate for each maximum perturbation magnitude (default: %(default)s)")
+
+parser$add_argument("--copy_number_norm_table",
+                    default = paste(script.basename, "/../data/16S_13_5_precalculated.tab.gz", sep=""),
+                    help = "The table of 16S copy numbers for each taxon to normalize taxon counts with (default: %(default)s)")
+
+parser$add_argument("--genome_content_table",
+                    default = paste(script.basename, "/../data/ko_13_5_precalculated.tab.gz", sep=""),
+                    help = "The genome content table for each taxon (default: %(default)s)")
+
+parser$add_argument("--bacterial_function_table",
+                    default = paste(script.basename, "/../data/KO_BACTERIAL_KEGG_2013_07_15.lst", sep=""),
+                    help = "The table of bacterial functions (default: %(default)s)")
+
+parser$add_argument("--tree",
+                    default = paste(script.basename, "/../data/gg_13_5_otus_99_annotated.tree", sep=""),
+                    help = "The tree to use for calculating weighted UniFrac (default: %(default)s)")
+
+parser$add_argument("--normal_scale",
+                    action = "store_true",
+                    help = "Flag to indicate that filtering should be done on normal scale (default filtering is done on log scale)")
+
+parser$add_argument("--range_max",
+                    type = "double",
+                    default = 0.4,
+                    help = "Set the maximum of the range of taxonomic profile dissimilarities, any perturbations with a greater taxonomic profile dissimilarity will be filtered out (default: %(default)s)")
+
+parser$add_argument("--range_min",
+                    type = "double",
+                    default = 0.0001,
+                    help = "Set the minimum of the range of taxonomic profile dissimilarities, any perturbations with a lower taxonomic profile dissimilarity will be filtered out (default: %(default)s)")
+
+parser$add_argument("--num_windows",
+                    type = "integer",
+                    default = 50,
+                    help = "The number of windows to use when filtering (default: %(default)s)")
+
+parser$add_argument("--num_perturbations",
+                    type = "integer",
+                    default = 50,
+                    help = "The number of perturbations to subsample to within each window (default: %(default)s)")
+
+parser$add_argument("--drop_low_perturbation_windows",
+                    action = "store_true",
+                    help = "Flag to indicate that perturbations in windows with fewer total perturbations than num_perturbations should be ignored")
 
 # Parse command line arguments
 args = parser$parse_args()
