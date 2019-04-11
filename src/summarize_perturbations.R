@@ -7,6 +7,12 @@
 
 suppressPackageStartupMessages(library(argparse))
 
+# Determine relative path to optional input files based on full path to script.
+initial.options <- commandArgs(trailingOnly = FALSE)
+file.arg.name <- "--file="
+script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+script.basename <- dirname(script.name)
+
 # Defining arguments and parser for command line arguments
 parser = ArgumentParser(description = "Generate tables of measures summarizing the original community and its relation to the perturbed community compositions.")
 
@@ -19,14 +25,37 @@ parser$add_argument("output_measure_table", help = "The location to save the tab
 parser$add_argument("output_function_relative_difference_table", help = "The location to save the table of relative function differences")
 
 # Define options
-parser$add_argument("--fast_matrix_multiply", default = "src/fast_matrix_multiplication.cpp", help = "Location of the Rcpp implementation of matrix multiplaction (default: %(default)s)")
-parser$add_argument("--file_handling", default = "src/file_handling.R", help = "Location of custom library for reading files")
-parser$add_argument("--function_distribution_features", default = "src/function_distribution_features.R", help = "Location of custom library for function distribution feature calculation (default: %(default)s)")
-parser$add_argument("--genome_content_table", default = "data/ko_13_5_precalculated.tab.gz", help = "The genome content table for each taxon (default: %(default)s)")
-parser$add_argument("--bacterial_function_table", default = "data/KO_BACTERIAL_KEGG_2013_07_15.lst", help = "The table of bacterial functions (default: %(default)s)")
-parser$add_argument("--pathway_mapping_table", default = "data/KOvsPATHWAY_BACTERIAL_KEGG_2013_07_15", help = "The table mapping functions to pathways (default: %(default)s)")
-parser$add_argument("--pathway_label_table", default = "data/map_title.tab", help = "Table with names for pathways (default: %(default)s)")
-parser$add_argument("--pathway_label_to_superpathway_label_mapping_table", default = "data/pathway_to_superpathway_mapping.tab", help = "Table mapping human readable pathway labels to human readable superpathway labels (default: %(default)s)")
+parser$add_argument("--fast_matrix_multiply",
+                    default = paste(script.basename, "/fast_matrix_multiplication.cpp", sep=""),
+                    help = "Location of the Rcpp implementation of matrix multiplaction (default: %(default)s)")
+
+parser$add_argument("--file_handling",
+                    default = paste(script.basename, "/file_handling.R", sep=""),
+                                    help = "Location of custom library for reading files")
+
+parser$add_argument("--function_distribution_features",
+                    default = paste(script.basename, "/function_distribution_features.R", sep=""),
+                    help = "Location of custom library for function distribution feature calculation (default: %(default)s)")
+
+parser$add_argument("--genome_content_table",
+                    default = paste(script.basename, "/../data/ko_13_5_precalculated.tab.gz", sep=""),
+                    help = "The genome content table for each taxon (default: %(default)s)")
+
+parser$add_argument("--bacterial_function_table",
+                    default = paste(script.basename, "/../data/KO_BACTERIAL_KEGG_2013_07_15.lst", sep=""),
+                    help = "The table of bacterial functions (default: %(default)s)")
+
+parser$add_argument("--pathway_mapping_table",
+                    default = paste(script.basename, "/../data/KOvsPATHWAY_BACTERIAL_KEGG_2013_07_15", sep=""),
+                    help = "The table mapping functions to pathways (default: %(default)s)")
+
+parser$add_argument("--pathway_label_table",
+                    default = paste(script.basename, "/../data/map_title.tab", sep=""),
+                    help = "Table with names for pathways (default: %(default)s)")
+
+parser$add_argument("--pathway_label_to_superpathway_label_mapping_table",
+                    default = paste(script.basename, "/../data/pathway_to_superpathway_mapping.tab", sep=""),
+                    help = "Table mapping human readable pathway labels to human readable superpathway labels (default: %(default)s)")
 
 # Parse command line arguments
 args = parser$parse_args()
