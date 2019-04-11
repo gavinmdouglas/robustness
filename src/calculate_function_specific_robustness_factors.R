@@ -7,15 +7,26 @@
 
 suppressPackageStartupMessages(library(argparse))
 
+# Determine relative path to optional input files based on full path to script.
+initial.options <- commandArgs(trailingOnly = FALSE)
+file.arg.name <- "--file="
+script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+script.basename <- dirname(script.name)
+
 # Defining arguments and parser for command line arguments
 parser = ArgumentParser(description = "Calculate function-specific robustness factors.")
 
 # Define required positional arguments
-parser$add_argument("measure_table", help = "Table of measures for perturbated function relative differences")
-parser$add_argument("output_robustness_factor_table", help = "The location to save the table of function-specific robustness coefficients")
+parser$add_argument("measure_table",
+                    help = "Table of measures for perturbated function relative differences")
+
+parser$add_argument("output_robustness_factor_table",
+                    help = "The location to save the table of function-specific robustness coefficients")
 
 # Define options
-parser$add_argument("--file_handling", default = "src/file_handling.R", help = "Location of custom library for reading files")
+parser$add_argument("--file_handling",
+                    default = paste(script.basename, "src/file_handling.R", sep=""),
+                    help = "Location of custom library for reading files")
 
 # Parse command line arguments
 args = parser$parse_args()
