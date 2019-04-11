@@ -8,7 +8,7 @@ The source code for this microbial community taxa-function robustness estimation
 
 ##### Dependencies
 
-This pipeline relies on the following R packages that may not be installed by default: argparse, phyloseq, and RcppEigen.
+This pipeline relies on the following R packages that may not be installed by default: argparse, coop, phyloseq, and RcppEigen.
 
 ##### Downloading required data files
 
